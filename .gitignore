@@ -1,3 +1,2 @@
 *.exe
 *.log
-!release/*.exe

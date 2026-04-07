@@ -23,17 +23,14 @@
 - `src/RestoreXiaoaiRemap.cs`
   恢复程序入口；普通权限启动即可，它会在需要时自动请求管理员权限
 
-- `release/`
-  已编译好的可执行文件，方便直接使用
-
 ## 构建
 
 使用 .NET Framework 自带的 C# 编译器生成三个可执行文件：
 
 ```powershell
-& "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /t:exe /out:release\PressureToSnip.exe src\PressureToSnip.cs
-& "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /t:exe /out:release\InstallXiaoaiRemap.exe src\InstallXiaoaiRemap.cs src\RemapCommon.cs
-& "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /t:exe /out:release\RestoreXiaoaiRemap.exe src\RestoreXiaoaiRemap.cs src\RemapCommon.cs
+& "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /t:exe /out:PressureToSnip.exe src\PressureToSnip.cs
+& "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /t:exe /out:InstallXiaoaiRemap.exe src\InstallXiaoaiRemap.cs src\RemapCommon.cs
+& "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /t:exe /out:RestoreXiaoaiRemap.exe src\RestoreXiaoaiRemap.cs src\RemapCommon.cs
 ```
 
 ## 安装
@@ -41,7 +38,7 @@
 直接运行：
 
 ```powershell
-.\release\InstallXiaoaiRemap.exe
+.\InstallXiaoaiRemap.exe
 ```
 
 程序会自动弹出 UAC 提权窗口。确认后，会完成以下操作：
@@ -56,7 +53,7 @@
 直接运行：
 
 ```powershell
-.\release\RestoreXiaoaiRemap.exe
+.\RestoreXiaoaiRemap.exe
 ```
 
 程序会自动弹出 UAC 提权窗口。确认后，会删除 IFEO 重定向，并结束当前正在运行的 `XiaoaiAgent.exe`。
@@ -65,7 +62,7 @@
 
 这个方案使用 Windows 的 `Image File Execution Options`（IFEO）机制，为 `XiaoaiAgent.exe` 配置 `Debugger`。
 
-当系统或厂商服务尝试启动 `XiaoaiAgent.exe` 时，实际运行的是 `release/PressureToSnip.exe`；它再调用系统的 `ms-screenclip:` 协议，从而打开 Windows 截图界面。
+当系统或厂商服务尝试启动 `XiaoaiAgent.exe` 时，实际运行的是 `PressureToSnip.exe`；它再调用系统的 `ms-screenclip:` 协议，从而打开 Windows 截图界面。
 
 `InstallXiaoaiRemap.exe` 和 `RestoreXiaoaiRemap.exe` 分别负责安装和移除这条重定向。
 
@@ -73,5 +70,5 @@
 
 - 安装和恢复都需要管理员权限，但程序会自动请求提权
 - 这个方案会影响所有对 `XiaoaiAgent.exe` 的启动，不只是一种触发方式
-- `release/PressureToSnip.exe` 需要与安装程序放在同一目录
+- `PressureToSnip.exe` 需要与安装程序放在同一目录
 - Windows 或厂商软件更新后，如果入口程序名发生变化，可能需要重新调整
