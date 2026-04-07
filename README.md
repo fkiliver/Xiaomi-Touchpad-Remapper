@@ -1,6 +1,8 @@
 # Xiaoai-Touchpad-Remapper
 
-这个项目用于把 `XiaoaiAgent.exe` 的启动重定向到 Windows 系统截图界面，效果等同于 `Win+Shift+S`。
+这个项目用于将 Xiaomi Book Pro 14 触控板的重按动作重定向到 Windows 系统截图界面，效果等同于 `Win+Shift+S`。
+
+当前实现方式是拦截由重按动作唤起的 `XiaoaiAgent.exe`，并将其改为调用系统截图入口。
 
 适用场景：
 
