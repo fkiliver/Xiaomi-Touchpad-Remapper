@@ -16,13 +16,13 @@ internal static class RemapCommon
         {
             if (!IsAdministrator())
             {
-                return RelaunchElevated("InstallXiaoaiRemap.exe");
+                return RelaunchElevatedSelf();
             }
 
             string launcherPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PressureToSnip.exe");
             if (!File.Exists(launcherPath))
             {
-                throw new FileNotFoundException("PressureToSnip.exe not found next to InstallXiaoaiRemap.exe.", launcherPath);
+                throw new FileNotFoundException("PressureToSnip.exe not found next to the installer.", launcherPath);
             }
 
             using (RegistryKey key = Registry.LocalMachine.CreateSubKey(IfeoSubKey))
@@ -52,7 +52,7 @@ internal static class RemapCommon
         {
             if (!IsAdministrator())
             {
-                return RelaunchElevated("RestoreXiaoaiRemap.exe");
+                return RelaunchElevatedSelf();
             }
 
             Registry.LocalMachine.DeleteSubKeyTree(IfeoSubKey, false);
@@ -98,12 +98,15 @@ internal static class RemapCommon
         return principal.IsInRole(WindowsBuiltInRole.Administrator);
     }
 
-    private static int RelaunchElevated(string exeName)
+    private static int RelaunchElevatedSelf()
     {
-        string exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, exeName);
-        if (!File.Exists(exePath))
+        Process currentProcess = Process.GetCurrentProcess();
+        string exePath = currentProcess.MainModule.FileName;
+        currentProcess.Dispose();
+
+        if (string.IsNullOrEmpty(exePath) || !File.Exists(exePath))
         {
-            throw new FileNotFoundException(exeName + " not found next to the current executable.", exePath);
+            throw new FileNotFoundException("Current executable path could not be resolved.", exePath);
         }
 
         var startInfo = new ProcessStartInfo
